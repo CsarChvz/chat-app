@@ -1,23 +1,21 @@
-const express = require("express");
-const socketio = require("socket.io");
-const app = express();
-require("dotenv").config();
+const path = require('path')
+const http = require('http')
+const express = require('express')
+const socketio = require('socket.io')
 
-const port = process.env.PORT;
-const path = require("path");
+const app = express()
+const server = http.createServer(app)
+const io = socketio(server)
 
-const publicPath = path.join(__dirname, "../public");
+const port = process.env.PORT || 3000
+const publicDirectoryPath = path.join(__dirname, '../public')
 
-const http = require("http");
-const server = http.createServer(app);
-const io = socketio(server);
+app.use(express.static(publicDirectoryPath))
 
-app.use(express.static(publicPath));
-
-io.on("connection", (socket) => {
-  console.log("New WebSocket connection");
-});
+io.on('connection', () => {
+    console.log('New WebSocket connection')
+})
 
 server.listen(port, () => {
-  console.log("Server is running on port 3000");
-});
+    console.log(`Server is up on port ${port}!`)
+})
