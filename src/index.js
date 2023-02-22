@@ -30,11 +30,13 @@ io.on("connection", (socket) => {
 
   // Recepcion de ubicacion de un cliente y envio a todos los clientes
 
+  // client(sendLocation) -> server -> client(locationMessage)
+
   //  - Se escucha al event "sendLocation" del cliente
   socket.on("sendLocation", (coords, callback) => {
     // Se envia el mensaje a todos los clientes
     io.emit(
-      "message",
+      "locationMessage",
       `https://google.com/maps?q=${coords.latitude},${coords.longitude}`
     );
     callback();
