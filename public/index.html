@@ -11,16 +11,19 @@
     </form>
 
     <button id="send-location">Share Location</button>
-
+    <!-- Se formatea en la template para que sean mejores practicas. -->
     <script id="message-template" type="text/html">
       <div>
-        <p>{{ message }}</p>
+        <p>{{ message }}-{{createdAt}}</p>
       </div>
     </script>
 
     <script id="location-template" type="text/html">
       <div>
-        <p><a href="{{url}}" target="_blank">My Current Location</a></p>
+        <p>
+          <a href="{{url}}" target="_blank">My Current Location</a>-
+          {{createdAt}}
+        </p>
       </div>
     </script>
 

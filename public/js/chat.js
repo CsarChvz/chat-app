@@ -17,7 +17,8 @@ const $sendLocationButton = document.querySelector("#send-location");
 
 socket.on("message", (message) => {
   const html = Mustache.render(messageTemplate, {
-    message,
+    message: message.message,
+    createdAt: moment(message.createdAt).format("h:mm a"),
   });
   $messages.insertAdjacentHTML("beforeend", html);
 });
@@ -25,8 +26,10 @@ socket.on("message", (message) => {
 // Location message
 socket.on("locationMessage", (url) => {
   // Renderizamos el template con la url emitida por el servidor
+  // Aqui lo que se hace es pasar un objeto con la url y la fecha de creacion
   const htmlLocation = Mustache.render(locationTemplate, {
-    url,
+    url: url.url,
+    createdAt: moment(url.createdAt).format("h:mm a"),
   });
 
   // Adjuntamos el template al DOM

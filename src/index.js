@@ -12,19 +12,21 @@ require("dotenv").config();
 const port = process.env.PORT || 3000;
 const publicDirectoryPath = path.join(__dirname, "../public");
 
+const { generateMessage, generateLocationMessage } = require("./utils/message");
+
 app.use(express.static(publicDirectoryPath));
 
 io.on("connection", (socket) => {
   console.log("New WebSocket connection");
 
-  socket.emit("message", "Welcome!");
+  socket.emit("message", generateMessage("Welcome!"));
 
   // Enviar un mensaje a todos los usuarios menos al que se acaba de conectar
-  socket.broadcast.emit("message", "A new user has joined!");
+  socket.broadcast.emit("message", generateMessage("A new user has joined!"));
 
   // Recepcion de mensaje de un cliente y envio a todos los clientes
   socket.on("sendMessage", (message, callback) => {
-    io.emit("message", message);
+    io.emit("message", generateMessage(message));
     callback();
   });
 
@@ -37,7 +39,9 @@ io.on("connection", (socket) => {
     // Se envia el mensaje a todos los clientes
     io.emit(
       "locationMessage",
-      `https://google.com/maps?q=${coords.latitude},${coords.longitude}`
+      generateLocationMessage(
+        `https://google.com/maps?q=${coords.latitude},${coords.longitude}`
+      )
     );
     callback();
   });
