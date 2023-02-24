@@ -13,6 +13,11 @@ const locationTemplate = document.querySelector("#location-template").innerHTML;
 // Location -- Elementos del DOM
 const $sendLocationButton = document.querySelector("#send-location");
 
+// Options
+const { username, room } = Qs.parse(location.search, {
+  ignoreQueryPrefix: true,
+});
+
 // Normal message
 
 socket.on("message", (message) => {
@@ -79,3 +84,5 @@ $sendLocationButton.addEventListener("click", () => {
     );
   });
 });
+
+socket.emit('join', { username, room }, (error) => {}) 

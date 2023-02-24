@@ -7,6 +7,12 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
+const {
+  addUser,
+  getUser,
+  getUsersInRoom,
+  removeUser,
+} = require("./utils/users");
 require("dotenv").config();
 
 const port = process.env.PORT || 3000;
@@ -46,6 +52,26 @@ io.on("connection", (socket) => {
     callback();
   });
 
+  socket.on("join", ({ username, room }, callback) => {
+    // El socket.join se usa para unir al usuario a una sala
+    const { error, user } = addUser({ id: socket.id, username, room });
+    if (error) {
+      return callback(error);
+    }
+
+    socket.join(room);
+
+    // lOS METODOS EMIT Y BROADCAST SE PUEDEN USER SIMILARMENTE PARA LAS SALAS
+    // Solo tenemos que colocar a que sala queremos enviar el mensaje
+    // socket.emit.to(room).emit("message", generateMessage("Welcome!")
+    socket.to(room).emit("message", generateMessage("Welcome!"));
+
+    socket.broadcast
+      .to(room)
+      .emit("message", generateMessage(`${username} has joined!`));
+
+    callback();
+  });
   // Evento de desconexiób
   socket.on("disconnect", () => {
     // Como ya el socket se desconectó, no podemos usar el socket.emit, sino que usamos io.emit
